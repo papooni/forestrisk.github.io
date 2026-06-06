@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forest Risk Monitoring System — Work Timeline Dashboard</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #21262d;
+    --border: #30363d;
+    --text: #e6edf3;
+    --text-muted: #8b949e;
+    --green: #3fb950;
+    --green-dim: #1a3a23;
+    --yellow: #d29922;
+    --yellow-dim: #3a2e12;
+    --red: #f85149;
+    --red-dim: #3a1414;
+    --blue: #58a6ff;
+    --blue-dim: #0d2149;
+    --purple: #bc8cff;
+    --purple-dim: #2a1b4a;
+    --orange: #e3852b;
+    --orange-dim: #3a2010;
+    --teal: #39d3c3;
+    --teal-dim: #0d2e2b;
+    --accent: #3fb950;
+    --radius: 8px;
+    --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ── TOP HEADER ── */
+  .header {
+    background: linear-gradient(135deg, #0d2a0d 0%, #0d1117 50%, #0d1a2a 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 32px 48px 24px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(8px);
+  }
+
+  .header-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  .header-brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .brand-icon {
+    width: 44px; height: 44px;
+    background: var(--green-dim);
+    border: 1px solid var(--green);
+    border-radius: var(--radius);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+  }
+
+  .brand-text h1 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.3px;
+  }
+
+  .brand-text p {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  .header-meta {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .meta-tag {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  .meta-tag span { color: var(--text); font-weight: 600; }
+
+  /* ── PROGRESS BAR ── */
+  .progress-banner {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 48px;
+  }
+
+  .progress-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+
+  .progress-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+
+  .progress-label strong { color: var(--text); }
+
+  .progress-track {
+    flex: 1;
+    min-width: 200px;
+    height: 6px;
+    background: var(--surface2);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--green) 0%, #2ea043 100%);
+    border-radius: 3px;
+    width: 38%;
+    transition: width 0.6s ease;
+  }
+
+  .phase-pills {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .phase-pill {
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    border: 1px solid;
+    cursor: default;
+  }
+
+  .phase-pill.done   { background: var(--green-dim);  border-color: var(--green);  color: var(--green); }
+  .phase-pill.active { background: var(--yellow-dim); border-color: var(--yellow); color: var(--yellow); }
+  .phase-pill.plan   { background: var(--surface2);   border-color: var(--border); color: var(--text-muted); }
+
+  /* ── LEGEND ── */
+  .legend-bar {
+    background: var(--bg);
+    padding: 12px 48px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .legend-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    gap: 24px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .legend-section { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+
+  .legend-sep {
+    width: 1px; height: 20px;
+    background: var(--border);
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .sq {
+    width: 10px; height: 10px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  /* ── MAIN LAYOUT ── */
+  .main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 48px;
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 0;
+  }
+
+  /* ── SIDEBAR (month labels) ── */
+  .month-sidebar {
+    padding-top: 4px;
+  }
+
+  .month-anchor {
+    height: auto;
+    position: sticky;
+    top: 120px;
+  }
+
+  .month-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--green);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding: 6px 0;
+    border-left: 2px solid var(--green);
+    padding-left: 12px;
+    margin-bottom: 8px;
+    white-space: nowrap;
+  }
+
+  /* ── TIMELINE COLUMN ── */
+  .timeline-column {
+    padding-left: 32px;
+    border-left: 1px solid var(--border);
+  }
+
+  /* ── MONTH SECTION ── */
+  .month-section {
+    margin-bottom: 48px;
+  }
+
+  .month-section-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 8px 0 16px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .month-section-title::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--green);
+    border-radius: 50%;
+    flex-shrink: 0;
+    position: relative;
+    left: -35px;
+    margin-right: -6px;
+  }
+
+  /* ── WEEK CARD ── */
+  .week-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 20px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+    position: relative;
+  }
+
+  .week-card:hover { border-color: #444d56; }
+
+  .week-card.completed { border-left: 3px solid var(--green); }
+  .week-card.partial   { border-left: 3px solid var(--yellow); }
+  .week-card.planned   { border-left: 3px solid var(--border); }
+  .week-card.in-progress { border-left: 3px solid var(--blue); }
+
+  .card-header {
+    padding: 16px 20px 12px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .card-header-left { flex: 1; min-width: 0; }
+
+  .card-meta-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 6px;
+  }
+
+  .week-badge {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2px 7px;
+  }
+
+  .date-range {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .phase-tag {
+    font-size: 11px;
+    color: var(--purple);
+    background: var(--purple-dim);
+    border: 1px solid rgba(188, 140, 255, 0.3);
+    border-radius: 4px;
+    padding: 2px 7px;
+    font-weight: 500;
+  }
+
+  .card-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.3;
+    margin-bottom: 4px;
+  }
+
+  .card-subtitle {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  .card-badges {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: flex-end;
+    flex-shrink: 0;
+  }
+
+  /* ── STATUS BADGE ── */
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    border: 1px solid;
+    white-space: nowrap;
+  }
+
+  .status-badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  .status-completed  { background: var(--green-dim);  border-color: var(--green);  color: var(--green); }
+  .status-planned    { background: var(--surface2);   border-color: var(--border); color: var(--text-muted); }
+  .status-partial    { background: var(--yellow-dim); border-color: var(--yellow); color: var(--yellow); }
+  .status-inprogress { background: var(--blue-dim);   border-color: var(--blue);   color: var(--blue); }
+
+  /* ── TYPE BADGE ── */
+  .type-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .type-infrastructure { background: var(--teal-dim);   color: var(--teal);   border: 1px solid rgba(57,211,195,0.3); }
+  .type-feature        { background: var(--blue-dim);   color: var(--blue);   border: 1px solid rgba(88,166,255,0.3); }
+  .type-security       { background: var(--red-dim);    color: var(--red);    border: 1px solid rgba(248,81,73,0.3); }
+  .type-data           { background: var(--orange-dim); color: var(--orange); border: 1px solid rgba(227,133,43,0.3); }
+  .type-ml             { background: var(--purple-dim); color: var(--purple); border: 1px solid rgba(188,140,255,0.3); }
+  .type-bi             { background: var(--yellow-dim); color: var(--yellow); border: 1px solid rgba(210,153,34,0.3); }
+  .type-planned        { background: var(--surface2);   color: var(--text-muted); border: 1px solid var(--border); }
+
+  /* ── IMPACT ── */
+  .impact-badge {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+
+  .impact-critical { background: rgba(248,81,73,0.15); color: var(--red); }
+  .impact-high     { background: rgba(57,211,195,0.1); color: var(--teal); }
+  .impact-medium   { background: rgba(210,153,34,0.1); color: var(--yellow); }
+
+  /* ── ROLE ── */
+  .role-line {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .role-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0.6;
+    flex-shrink: 0;
+  }
+
+  /* ── ITEMS LIST ── */
+  .card-body {
+    padding: 0 20px 16px;
+  }
+
+  .items-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .items-list li {
+    display: flex;
+    gap: 10px;
+    align-items: baseline;
+    font-size: 13px;
+    color: var(--text-muted);
+    transition: color 0.15s;
+  }
+
+  .items-list li:hover { color: var(--text); }
+
+  .items-list li::before {
+    content: '▸';
+    color: var(--green);
+    font-size: 10px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .items-list li.planned-item { opacity: 0.6; }
+  .items-list li.planned-item::before { color: var(--text-muted); }
+
+  /* ── DIVIDER ── */
+  .card-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 0 20px 12px;
+  }
+
+  /* ── FILTER BAR ── */
+  .filter-bar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 48px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .filter-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .filter-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-size: 12px;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: var(--font);
+  }
+
+  .filter-btn:hover { border-color: #58a6ff; color: var(--text); }
+  .filter-btn.active { background: var(--green-dim); border-color: var(--green); color: var(--green); }
+
+  /* ── SUMMARY STATS ── */
+  .stats-row {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 48px;
+  }
+
+  .stats-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+
+  .stat-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .stat-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1;
+  }
+
+  .stat-value.green  { color: var(--green); }
+  .stat-value.yellow { color: var(--yellow); }
+  .stat-value.muted  { color: var(--text-muted); }
+
+  .stat-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* ── PLANNED SECTIONS ── */
+  .planned-disclaimer {
+    background: var(--yellow-dim);
+    border: 1px solid rgba(210,153,34,0.4);
+    border-radius: var(--radius);
+    padding: 10px 16px;
+    font-size: 12px;
+    color: var(--yellow);
+    margin-bottom: 16px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    border-top: 1px solid var(--border);
+    padding: 24px 48px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 40px;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    .header, .progress-banner, .legend-bar, .filter-bar, .stats-row { padding-left: 20px; padding-right: 20px; }
+    .main { grid-template-columns: 1fr; padding: 24px 20px; }
+    .month-sidebar { display: none; }
+    .timeline-column { padding-left: 0; border-left: none; }
+  }
+
+  /* ── SCROLL HINT ── */
+  html { scroll-behavior: smooth; }
+
+  .anchor { position: relative; top: -120px; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════ HEADER ══════════════════════════ -->
+<header class="header">
+  <div class="header-inner">
+    <div class="header-brand">
+      <div class="brand-icon">🌲</div>
+      <div class="brand-text">
+        <h1>Forest Risk Monitoring System</h1>
+        <p>Work Timeline Dashboard · ISEP Pós-Graduação Big Data &amp; Data Science 2024/2025</p>
+      </div>
+    </div>
+    <div class="header-meta">
+      <span class="meta-tag">Branch: <span>BI_DevOps + master</span></span>
+      <span class="meta-tag">Start: <span>2026-05-26</span></span>
+      <span class="meta-tag">Deadline: <span>~2026-08-31</span></span>
+      <span class="meta-tag">Team: <span>3 members</span></span>
+    </div>
+  </div>
+</header>
+
+<!-- ══════════════════════════ PROGRESS BANNER ══════════════════════════ -->
+<div class="progress-banner">
+  <div class="progress-inner">
+    <div class="progress-label"><strong>Overall Progress</strong> — Phase 1–2 complete, Phase 3 active</div>
+    <div class="progress-track"><div class="progress-fill"></div></div>
+    <div class="phase-pills">
+      <span class="phase-pill done">Phase 1 ✓</span>
+      <span class="phase-pill done">Phase 2 ✓</span>
+      <span class="phase-pill active">Phase 3 ▶</span>
+      <span class="phase-pill plan">Phase 4</span>
+      <span class="phase-pill plan">Phase 5</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════ STATS ══════════════════════════ -->
+<div class="stats-row">
+  <div class="stats-inner">
+    <div class="stat-item">
+      <span class="stat-value green">38%</span>
+      <span class="stat-label">Work Completed</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-value">45+</span>
+      <span class="stat-label">Commits Merged</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-value green">11</span>
+      <span class="stat-label">PRs Merged</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-value">3</span>
+      <span class="stat-label">Active Branches</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-value">52,676</span>
+      <span class="stat-label">Hotspots in Data Lake</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-value yellow">3</span>
+      <span class="stat-label">Phases Remaining</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-value muted">~12</span>
+      <span class="stat-label">Weeks to Deadline</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════ LEGEND ══════════════════════════ -->
+<div class="legend-bar">
+  <div class="legend-inner">
+    <div class="legend-section">
+      <span style="font-size:11px;color:var(--text-muted);font-weight:600;">STATUS</span>
+      <span class="legend-item"><span class="dot" style="background:var(--green)"></span>Completed</span>
+      <span class="legend-item"><span class="dot" style="background:var(--blue)"></span>In Progress</span>
+      <span class="legend-item"><span class="dot" style="background:var(--yellow)"></span>Partial</span>
+      <span class="legend-item"><span class="dot" style="background:var(--border)"></span>Planned</span>
+    </div>
+    <div class="legend-sep"></div>
+    <div class="legend-section">
+      <span style="font-size:11px;color:var(--text-muted);font-weight:600;">TYPE</span>
+      <span class="legend-item"><span class="sq" style="background:var(--teal-dim);border:1px solid var(--teal)"></span>Infrastructure</span>
+      <span class="legend-item"><span class="sq" style="background:var(--blue-dim);border:1px solid var(--blue)"></span>Feature</span>
+      <span class="legend-item"><span class="sq" style="background:var(--yellow-dim);border:1px solid var(--yellow)"></span>BI / Visualization</span>
+      <span class="legend-item"><span class="sq" style="background:var(--red-dim);border:1px solid var(--red)"></span>Security</span>
+      <span class="legend-item"><span class="sq" style="background:var(--orange-dim);border:1px solid var(--orange)"></span>Data Engineering</span>
+      <span class="legend-item"><span class="sq" style="background:var(--purple-dim);border:1px solid var(--purple)"></span>Machine Learning</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════ MAIN CONTENT ══════════════════════════ -->
+<div class="main">
+
+  <!-- Sidebar stubs (hidden on mobile) -->
+  <div class="month-sidebar">
+    <div style="position:sticky;top:160px;display:flex;flex-direction:column;gap:48px;">
+      <div>
+        <div class="month-label">May 2026</div>
+        <div style="font-size:11px;color:var(--text-muted);padding-left:14px;">2026-W22</div>
+      </div>
+      <div>
+        <div class="month-label" style="color:var(--blue)">Jun 2026</div>
+        <div style="font-size:11px;color:var(--text-muted);padding-left:14px;">2026-W23 → W26</div>
+      </div>
+      <div>
+        <div class="month-label" style="color:var(--yellow)">Jul 2026</div>
+        <div style="font-size:11px;color:var(--text-muted);padding-left:14px;">Planned</div>
+      </div>
+      <div>
+        <div class="month-label" style="color:var(--text-muted)">Aug 2026</div>
+        <div style="font-size:11px;color:var(--text-muted);padding-left:14px;">Planned</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Timeline column -->
+  <div class="timeline-column">
+
+    <!-- ════════════════ MAY 2026 ════════════════ -->
+    <div class="month-section">
+      <div class="month-section-title">May 2026</div>
+
+      <!-- W22 — Initial Setup -->
+      <div class="week-card completed" id="w22-setup">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="card-meta-row">
+              <span class="week-badge">2026-W22</span>
+              <span class="date-range">May 26 – Jun 1</span>
+              <span class="phase-tag">Phase 1 — Setup &amp; Dados</span>
+            </div>
+            <div class="card-title">Project Bootstrap &amp; Kafka/Cassandra Pipeline</div>
+            <div class="role-line">
+              <span class="role-dot"></span>
+              Data Engineer (jatsm) · BI &amp; DevOps (Vasco Sousa)
+            </div>
+          </div>
+          <div class="card-badges">
+            <span class="status-badge status-completed">Completed</span>
+            <span class="type-badge type-infrastructure">Infrastructure</span>
+            <span class="impact-badge impact-critical">Critical</span>
+          </div>
+        </div>
+        <div class="card-divider"></div>
+        <div class="card-body">
+          <ul class="items-list">
+            <li>Initial repository created with full Docker Compose environment (Kafka, Cassandra, InfluxDB, Grafana, Jupyter, Spark)</li>
+            <li>Kafka broker configured with 5 topics: <code style="color:var(--teal);font-size:12px">sensor-events</code>, <code style="color:var(--teal);font-size:12px">satellite-hotspots</code>, <code style="color:var(--teal);font-size:12px">weather-data</code>, <code style="color:var(--teal);font-size:12px">fire-alerts</code>, <code style="color:var(--teal);font-size:12px">data-quality-metrics</code></li>
+            <li>Cassandra schema: <code style="color:var(--teal);font-size:12px">sensor_readings</code> (partitioned by grid_id/hour_bucket), <code style="color:var(--teal);font-size:12px">fire_alerts</code>, <code style="color:var(--teal);font-size:12px">risk_predictions</code> — auto-provisioned on startup</li>
+            <li>IoT sensor simulator producer (Python) generating realistic temperature, humidity, wind readings</li>
+            <li>Consumer Kafka → Cassandra with validation pipeline, latency tracking</li>
+            <li>Data quality metrics: rejected event details written to InfluxDB with <code style="color:var(--teal);font-size:12px">rejected_event_detail</code> and <code style="color:var(--teal);font-size:12px">rejected_events</code> measurements</li>
+            <li>Grafana dashboard pre-provisioned for pipeline monitoring</li>
+            <li>Docker corrections: Jupyter startup sequence, 15-minute health cycles, container inter-dependencies</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- W22 — S3 / MLflow -->
+      <div class="week-card completed" id="w22-s3">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="card-meta-row">
+              <span class="week-badge">2026-W22</span>
+              <span class="date-range">May 29 – Jun 1</span>
+              <span class="phase-tag">Phase 1→2 — Data Lake</span>
+            </div>
+            <div class="card-title">S3 Data Lake &amp; MLflow Model Tracking</div>
+            <div class="role-line">
+              <span class="role-dot"></span>
+              BI &amp; DevOps (Vasco Sousa)
+            </div>
+          </div>
+          <div class="card-badges">
+            <span class="status-badge status-completed">Completed</span>
+            <span class="type-badge type-feature">Feature</span>
+            <span class="impact-badge impact-high">High</span>
+          </div>
+        </div>
+        <div class="card-divider"></div>
+        <div class="card-body">
+          <ul class="items-list">
+            <li>S3 writer module (<code style="color:var(--teal);font-size:12px">s3_writer.py</code>) with Parquet partitioning by <code style="color:var(--teal);font-size:12px">grid_id / year / month</code></li>
+            <li>Validated Kafka events written to S3 Parquet after Cassandra persistence (decoupled — Cassandra errors do not block S3 archival)</li>
+            <li>MLflow Tracking Server added to Docker Compose, backed by <code style="color:var(--teal);font-size:12px">forest-risk-models</code> S3 bucket</li>
+            <li>S3 bucket versioning enabled on <code style="color:var(--teal);font-size:12px">forest-risk-models</code> for model artifact lineage</li>
+            <li>MLflow validation notebook added for experiment tracking verification</li>
+            <li>Init script hardened: <code style="color:var(--teal);font-size:12px">set -euo pipefail</code>, idempotent <code style="color:var(--teal);font-size:12px">s3 mb</code> — safe to re-run</li>
+            <li>Healthchecks and startup ordering: LocalStack must be healthy before MLflow/consumer start</li>
+            <li>S3 client failure: guarded creation, unit test for client-failure path</li>
+            <li>Detailed guide: S3 data lake structure and MLflow usage patterns documented</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════ JUNE 2026 ════════════════ -->
+    <div class="month-section">
+      <div class="month-section-title">June 2026</div>
+
+      <!-- W23 — Spark Streaming + Historical Data -->
+      <div class="week-card completed" id="w23-spark">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="card-meta-row">
+              <span class="week-badge">2026-W23</span>
+              <span class="date-range">Jun 2 – Jun 5</span>
+              <span class="phase-tag">Phase 2→3 — Streaming Core</span>
+            </div>
+            <div class="card-title">Spark Structured Streaming &amp; NASA FIRMS Historical Load</div>
+            <div class="role-line">
+              <span class="role-dot"></span>
+              Data Engineer (jatsm)
+            </div>
+          </div>
+          <div class="card-badges">
+            <span class="status-badge status-completed">Completed</span>
+            <span class="type-badge type-data">Data Engineering</span>
+            <span class="impact-badge impact-critical">Critical</span>
+          </div>
+        </div>
+        <div class="card-divider"></div>
+        <div class="card-body">
+          <ul class="items-list">
+            <li>Spark Structured Streaming job (<code style="color:var(--teal);font-size:12px">spark_streaming_agregacao.py</code>): sliding window 10 min / slide 5 min per geographic zone</li>
+            <li>Watermark of 2 minutes for late event tolerance on stream joins</li>
+            <li>Aggregations per <code style="color:var(--teal);font-size:12px">grid_id</code>: avg/max risk, n_leituras, temp, humidity, wind — written to S3 as Parquet</li>
+            <li>Automatic job start — restarts on failure, no manual intervention needed</li>
+            <li>Historical NASA FIRMS data loaded: <strong style="color:var(--text)">52,676 hotspots</strong>, 10 zones, years 2020–2024</li>
+            <li>Grid ID mapping: <code style="color:var(--teal);font-size:12px">grid_id</code> added to historical records by coordinate-to-grid lookup</li>
+            <li>Data lake validator (<code style="color:var(--teal);font-size:12px">validar_datalake.py</code>): reconstructs partition columns from S3 path for accurate sampling</li>
+            <li>Spark Streaming and notebooks migrated from LocalStack to real AWS S3 (eu-west-1)</li>
+            <li>Copilot fix: removed tracked Jupyter checkpoint artifacts from git history</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- W23 — Real APIs + EDA -->
+      <div class="week-card completed" id="w23-apis">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="card-meta-row">
+              <span class="week-badge">2026-W23</span>
+              <span class="date-range">Jun 5</span>
+              <span class="phase-tag">Phase 2 — Ingestão Real</span>
+            </div>
+            <div class="card-title">Real Data APIs &amp; Exploratory Data Analysis</div>
+            <div class="role-line">
+              <span class="role-dot"></span>
+              Data Engineer (jatsm) · Data Scientist (vitorhugoscampos)
+            </div>
+          </div>
+          <div class="card-badges">
+            <span class="status-badge status-completed">Completed</span>
+            <span class="type-badge type-data">Data Engineering</span>
+            <span class="impact-badge impact-high">High</span>
+          </div>
+        </div>
+        <div class="card-divider"></div>
+        <div class="card-body">
+          <ul class="items-list">
+            <li>Producer split into two services: <code style="color:var(--teal);font-size:12px">producer-sensores</code> (mock IoT) and <code style="color:var(--teal);font-size:12px">producer-apis</code> (real external APIs)</li>
+            <li>NASA FIRMS real-time hotspot API integration (API key provisioned)</li>
+            <li>IPMA weather API: temperature, humidity, wind direction &amp; speed for Portugal regions</li>
+            <li>ICNF land use and forest type cartography data integrated</li>
+            <li>All credentials moved to <code style="color:var(--teal);font-size:12px">.env</code> — Docker Compose uses env substitution; <code style="color:var(--teal);font-size:12px">.env.example</code> published</li>
+            <li>EDA script for NASA FIRMS historical data — 2020–2024 hotspot analysis (pandas)</li>
+            <li>HTML EDA report generated: hotspot distribution, FRP trends, seasonal patterns, geographic clusters</li>
+            <li>Data quality validation framework (Great Expectations) integrated into consumer pipeline</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- W23 — BI & DevOps -->
+      <div class="week-card completed" id="w23-bi">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="card-meta-row">
+              <span class="week-badge">2026-W23</span>
+              <span class="date-range">Jun 5 – Jun 6</span>
+              <span class="phase-tag">Phase 5 — BI Deliverable</span>
+            </div>
+            <div class="card-title">Power BI Dashboards Design &amp; AWS Security Layer</div>
+            <div class="role-line">
+              <span class="role-dot"></span>
+              BI &amp; DevOps (Vasco Sousa)
+            </div>
+          </div>
+          <div class="card-badges">
+            <span class="status-badge status-completed">Completed</span>
+            <span class="type-badge type-bi">BI / Visualization</span>
+            <span class="impact-badge impact-high">High</span>
+          </div>
+        </div>
+        <div class="card-divider"></div>
+        <div class="card-body">
+          <ul class="items-list">
+            <li>BI &amp; DevOps design spec: 3 Power BI pages + AWS security layer (<code style="color:var(--teal);font-size:12px">docs/superpowers/specs/2026-06-05-bi-devops-design.md</code>)</li>
+            <li>All Power BI data routed through Athena ODBC (<code style="color:var(--teal);font-size:12px">ForestRiskAthena</code> DSN, eu-west-1, Import mode)</li>
+            <li>Athena DDL: <code style="color:var(--teal);font-size:12px">viirs_hotspots</code> (CSV/OpenCSVSerde), <code style="color:var(--teal);font-size:12px">agregados_streaming</code> (Parquet), <code style="color:var(--teal);font-size:12px">mock_predictions</code> — ParseException fixed (simplified DDL)</li>
+            <li>Mock ML predictions: 50 rows across Portugal regiões, risk 0–100, confidence 60–95%, model v0.1-mock</li>
+            <li><strong style="color:var(--text)">Page 1 — Real-time Risk Map:</strong> bubble map colored by risk_medio (green&lt;40 / yellow 40–70 / red&gt;70), KPIs for critical zone &amp; global avg</li>
+            <li><strong style="color:var(--text)">Page 2 — Predictive Dashboard:</strong> mock_predictions map + top-10 zones bar + sortable table + disclaimer text box</li>
+            <li><strong style="color:var(--text)">Page 3 — Historical Analysis:</strong> KPI row (total hotspots, avg FRP, worst year), bar chart + heatmap month×year + lat/lon map</li>
+            <li>AWS IAM least-privilege policy for <code style="color:var(--teal);font-size:12px">ForestRiskUser</code>: S3 scoped to <code style="color:var(--teal);font-size:12px">forest-risk-*</code>, Athena to <code style="color:var(--teal);font-size:12px">forest_risk</code> database only</li>
+            <li>S3 hardening checklist: SSE-S3 encryption, versioning, public access block on all buckets</li>
+            <li>AWS CloudTrail audit: S3 + Athena API call logging to <code style="color:var(--teal);font-size:12px">forest-risk-logs</code> bucket</li>
+            <li>S3 MLflow integration: model artifacts tracked in <code style="color:var(--teal);font-size:12px">s3://forest-risk-models</code> with experiment lineage</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- W24-W26 — Phase 3 planned -->
+      <div class="planned-disclaimer">
+        ⚠ The following entries represent work planned in the PDF roadmap not yet present in the repository.
+      </div>
+
+      <div class="week-card planned" id="w24-streaming">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="card-meta-row">
+              <span class="week-badge">2026-W24</span>
+              <span class="date-range">Jun 9 – Jun 15</span>
+              <span class="phase-tag">Phase 3 — Alertas em Tempo Real</span>
+            </div>
+            <div class="card-title">3-Stream Join, Risk Index Engine &amp; Fire Alerts</div>
+            <div class="role-line">
+              <span class="role-dot" style="opacity:0.35"></span>
+              Data Engineer + Data Scientist (planned)
+            </div>
+          </div>
+          <div class="card-badges">
+            <span class="status-badge status-planned">Planned</span>
+            <span class="type-badge type-planned">Streaming</span>
+            <span class="impact-badge impact-critical">Critical</span>
+          </div>
+        </div>
+        <div class="card-divider"></div>
+        <div class="card-body">
+          <ul class="items-list">
+            <li class="planned-item">Join between 3 Kafka streams: <code style="color:var(--text-muted);font-size:12px">sensor-events</code> + <code style="color:var(--text-muted);font-size:12px">satellite-hotspots</code> + <code style="color:var(--text-muted);font-size:12px">weather-data</code></li>
+            <li class="planned-item">Watermark-based late-arrival handling (2 min tolerance)</li>
+            <li class="planned-item">Composite risk index calculation (0–100) with configurable per-variable weights</li>
+            <li class="planned-item">Alert rule: temperature &gt; 35°C AND humidity &lt; 20% AND wind &gt; 30 km/h → CRITICAL alert</li>
+            <li class="planned-item">fire-alerts publication: LOW / MEDIUM / HIGH / CRITICAL levels with per-zone persistence in Cassandra</li>
+            <li class="planned-item">Backtest with 2017 and 2022 high-risk years to validate alert sensitivity</li>
+            <li class="planned-item">Power BI Page 1 auto-refresh every 5 minutes from Athena/S3</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════ JULY 2026 ════════════════ -->
+    <div class="month-section">
+      <div class="month-section-title" style="color:var(--text-muted)">July 2026 — Planned</div>
+
+      <div class="week-card planned" id="w27-ml">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="card-meta-row">
+              <span class="week-badge">2026-W27 – W30</span>
+              <span class="date-range">Jul 6 – Aug 2 (Weeks 9–11 of roadmap)</span>
+              <span class="phase-tag">Phase 4 — Machine Learning Preditivo</span>
+            </div>
+            <div class="card-title">CRISP-DM ML Pipeline — Risk Prediction Model</div>
+            <div class="role-line">
+              <span class="role-dot" style="opacity:0.35"></span>
+              Data Scientist + Data Engineer + BI &amp; DevOps (planned)
+            </div>
+          </div>
+          <div class="card-badges">
+            <span class="status-badge status-planned">Planned</span>
+            <span class="type-badge type-ml">Machine Learning</span>
+            <span class="impact-badge impact-high">High</span>
+          </div>
+        </div>
+        <div class="card-divider"></div>
+        <div class="card-body">
+          <ul class="items-list">
+            <li class="planned-item">Spark batch job to extract and prepare ML training dataset from S3 historical data</li>
+            <li class="planned-item">CRISP-DM: full EDA → feature engineering (grid aggregates, rolling averages, composite indices)</li>
+            <li class="planned-item">Random Forest and XGBoost training with cross-validation; target F1 &gt; 0.80 on HIGH risk class</li>
+            <li class="planned-item">Feature importance analysis: which variables most predict fire risk</li>
+            <li class="planned-item">ROC-AUC and confusion matrix evaluation; model comparison report</li>
+            <li class="planned-item">Model serialization and export to Spark MLlib for streaming inference</li>
+            <li class="planned-item">Automatic weekly retraining pipeline</li>
+            <li class="planned-item">Risk predictions (24h, 48h, 72h horizons) persisted to <code style="color:var(--text-muted);font-size:12px">risk_predictions</code> Cassandra table</li>
+            <li class="planned-item">Power BI Page 2 updated with real model predictions (replace mock data)</li>
+            <li class="planned-item">Top-10 highest-risk zone chart and risk evolution per district graphs</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════ AUGUST 2026 ════════════════ -->
+    <div class="month-section">
+      <div class="month-section-title" style="color:var(--text-muted)">August 2026 — Planned</div>
+
+      <div class="week-card planned" id="w33-final">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="card-meta-row">
+              <span class="week-badge">2026-W32 – W35</span>
+              <span class="date-range">Aug 3 – Aug 31 (Weeks 12–14 of roadmap)</span>
+              <span class="phase-tag">Phase 5 — Relatório, Testes &amp; Apresentação</span>
+            </div>
+            <div class="card-title">Load Testing, Technical Report &amp; Final Demo</div>
+            <div class="role-line">
+              <span class="role-dot" style="opacity:0.35"></span>
+              Full Team — all roles (planned)
+            </div>
+          </div>
+          <div class="card-badges">
+            <span class="status-badge status-planned">Planned</span>
+            <span class="type-badge type-planned">Delivery</span>
+            <span class="impact-badge impact-high">High</span>
+          </div>
+        </div>
+        <div class="card-divider"></div>
+        <div class="card-body">
+          <ul class="items-list">
+            <li class="planned-item">Load test: 10,000 events/second through Kafka pipeline end-to-end</li>
+            <li class="planned-item">Model validation on 2023 held-out data (unseen during training)</li>
+            <li class="planned-item">Technical report: 7 sections — architecture, implementation, CRISP-DM, ML metrics, security, RGPD, conclusions</li>
+            <li class="planned-item">Diagrams: block architecture diagram for all 6 layers</li>
+            <li class="planned-item">Power BI dashboards polished for presentation mode (full screen, dark theme)</li>
+            <li class="planned-item">Live demo rehearsal: event injection → fire alert in Kafka → alert visible in dashboard &lt; 60 seconds</li>
+            <li class="planned-item">Oral presentation: 20 min (problem 3min + solution 8min + demo 6min + ML results 3min) + 10 min Q&amp;A</li>
+            <li class="planned-item">Repository: full README, deploy instructions, docker compose up — one-command startup</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════ UNPLANNED / IMPROVEMENTS ════════════════ -->
+    <div class="month-section">
+      <div class="month-section-title" style="color:var(--orange)">
+        Unplanned Technical Work — Not in Original PDF
+      </div>
+
+      <div class="week-card completed" style="border-left-color:var(--orange)" id="unplanned">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="card-meta-row">
+              <span class="week-badge">2026-W22/W23</span>
+              <span class="date-range">May 29 – Jun 5</span>
+              <span class="phase-tag" style="color:var(--orange);background:var(--orange-dim);border-color:rgba(227,133,43,0.3)">Beyond Spec</span>
+            </div>
+            <div class="card-title">Enhancements &amp; Improvements Beyond Original Spec</div>
+            <div class="role-line">
+              <span class="role-dot" style="background:var(--orange)"></span>
+              BI &amp; DevOps + Data Engineer
+            </div>
+          </div>
+          <div class="card-badges">
+            <span class="status-badge status-completed">Completed</span>
+            <span class="type-badge" style="background:var(--orange-dim);color:var(--orange);border:1px solid rgba(227,133,43,0.3)">Improvement</span>
+            <span class="impact-badge impact-medium">Medium</span>
+          </div>
+        </div>
+        <div class="card-divider"></div>
+        <div class="card-body">
+          <ul class="items-list">
+            <li>S3 bucket versioning beyond minimum spec — enables model artifact rollback and data lake audit trail</li>
+            <li>MLflow model registry integration — not required by PDF but adds professional model lifecycle management</li>
+            <li>Data quality module with per-event rejected detail logging (beyond basic count metrics)</li>
+            <li>Athena DDL as code in repository — makes BI setup reproducible and reviewable</li>
+            <li>AWS IAM policy as JSON committed to repo — infrastructure-as-code approach</li>
+            <li>S3 hardening checklist and CloudTrail documentation — exceeds basic PDF security requirements</li>
+            <li>EDA HTML report auto-generated — shareable artifact for the Data Scientist section</li>
+            <li>Two separate producers (mock vs real APIs) with environment-based switching — clean dev/prod separation</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /timeline-column -->
+</div><!-- /main -->
+
+<!-- ══════════════════════════ FOOTER ══════════════════════════ -->
+<footer class="footer">
+  <p>Forest Risk Monitoring System · ISEP Pós-Graduação Big Data &amp; Data Science 2024/2025</p>
+  <p style="margin-top:6px;color:var(--border)">Generated from git log (branches: master, BI_DevOps, Data_Engineer, Data_Scientist) + Projeto_ForestRisk_ISEP.pdf · Dashboard built 2026-06-06</p>
+</footer>
+
+<script>
+  // ── Filter interactivity ──
+  // (no filter bar needed for now — cards are self-contained)
+
+  // ── Animate progress bar on load ──
+  document.addEventListener('DOMContentLoaded', () => {
+    const fill = document.querySelector('.progress-fill');
+    if (fill) {
+      fill.style.width = '0';
+      setTimeout(() => { fill.style.width = '38%'; }, 300);
+    }
+  });
+
+  // ── Collapsible card bodies on click ──
+  document.querySelectorAll('.card-header').forEach(header => {
+    header.style.cursor = 'pointer';
+    header.addEventListener('click', () => {
+      const card = header.closest('.week-card');
+      const body = card.querySelector('.card-body');
+      const divider = card.querySelector('.card-divider');
+      if (!body) return;
+      const collapsed = body.style.display === 'none';
+      body.style.display = collapsed ? '' : 'none';
+      if (divider) divider.style.display = collapsed ? '' : 'none';
+    });
+  });
+</script>
+
+</body>
+</html>
